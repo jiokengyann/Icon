@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0F0F17" />
+    <meta name="description" content="Icon — social feed, marketplace, and AI tools in one app." />
+
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Icon" />
+
+    <title>Icon</title>
+
+    <!-- No build step: these load React, Firebase, and icons straight from a CDN -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+          "lucide-react": "https://esm.sh/lucide-react@0.383.0?deps=react@18.3.1",
+          "firebase/app": "https://esm.sh/firebase@10.13.0/app",
+          "firebase/auth": "https://esm.sh/firebase@10.13.0/auth",
+          "firebase/firestore": "https://esm.sh/firebase@10.13.0/firestore"
+        }
+      }
+    </script>
+
+    <!-- In-browser JSX support: lets app.js use JSX with no build tool -->
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+  </head>
+  <body style="margin:0; background:#0F0F17;">
+    <div id="root">
+      <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; font-family:sans-serif; color:#8B8B99; font-size:14px;">
+        Loading Icon...
+      </div>
+    </div>
+
+    <script>
+      // Safety net: if anything fails to load or run, show a real error
+      // message here instead of leaving a silent black/blank screen.
+      function showFatalError(msg) {
+        var root = document.getElementById("root");
+        root.innerHTML =
+          '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+          'font-family:sans-serif;color:#F5F5F7;padding:24px;text-align:center;">' +
+          '<div style="font-size:16px;font-weight:700;margin-bottom:10px;">Something didn\'t load</div>' +
+          '<div style="font-size:12.5px;color:#8B8B99;max-width:320px;line-height:1.5;">' + msg + '</div></div>';
+      }
+      window.addEventListener("error", function (e) {
+        showFatalError("Error: " + (e.message || "unknown error") + (e.filename ? " (" + e.filename + ")" : ""));
+      });
+      window.addEventListener("unhandledrejection", function (e) {
+        showFatalError("Error: " + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+      });
+      // If nothing has replaced the loading placeholder within 15 seconds,
+      // something silently failed (most likely a blocked CDN request).
+      setTimeout(function () {
+        var root = document.getElementById("root");
+        if (root && root.textContent.indexOf("Loading Icon...") !== -1) {
+          showFatalError(
+            "The app is taking a very long time to load. This usually means a network, firewall, or VPN is blocking one of the required files (react, firebase, or babel from their CDN). Try a different network, or disable any VPN/content filter and reload."
+          );
+        }
+      }, 15000);
+    </script>
+
+    <script type="text/babel" data-type="module" data-presets="react" src="./app.js"></script>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+        });
+      }
+    </script>
+  </body>
+</html>
